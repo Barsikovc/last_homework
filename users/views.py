@@ -11,7 +11,7 @@ class UserViewSet(viewsets.ModelViewSet):
     ViewSet для модели User.
     Стандартные действия: list, create, retrieve, update, destroy.
     """
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('id')
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
 
