@@ -1,0 +1,18 @@
+[run]
+source = .
+omit =
+    */migrations/*
+    */venv/*
+    */tests.py
+    */__init__.py
+    manage.py
+    run_tests.py
+    run_coverage.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if settings.DEBUG
