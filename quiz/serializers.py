@@ -1,20 +1,20 @@
+"""Сериализаторы для приложения quiz."""
 from rest_framework import serializers
 
-from .models import Question, Choice, UserAnswer
+from .models import Choice, Question, UserAnswer
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
-    """Вариант ответа. is_correct доступен только админу (при создании/обновлении)."""
+    """Вариант ответа. is_correct доступен только админу."""
 
     class Meta:
+        """Метаданные сериализатора."""
+
         model = Choice
         fields = ['id', 'question', 'text', 'is_correct']
 
     def validate(self, data):
-        """
-        Проверяем: у одного вопроса может быть только один правильный ответ.
-        Если is_correct=True, а правильный уже есть — ошибка.
-        """
+        """Проверяет, что у вопроса только один правильный ответ."""
         is_correct = data.get('is_correct', False)
         question = data.get('question')
 
@@ -22,7 +22,6 @@ class ChoiceSerializer(serializers.ModelSerializer):
             existing_correct = Choice.objects.filter(
                 question=question, is_correct=True
             )
-            # При обновлении исключаем самого себя
             if self.instance:
                 existing_correct = existing_correct.exclude(pk=self.instance.pk)
             if existing_correct.exists():
@@ -38,11 +37,13 @@ class QuestionSerializer(serializers.ModelSerializer):
     choices = serializers.SerializerMethodField()
 
     class Meta:
+        """Метаданные сериализатора."""
+
         model = Question
         fields = ['id', 'product', 'text', 'choices']
 
     def get_choices(self, obj):
-        """Отдаём варианты без поля is_correct."""
+        """Отдаёт варианты без поля is_correct."""
         return [
             {'id': c.id, 'text': c.text}
             for c in obj.choices.all()
@@ -55,6 +56,8 @@ class QuestionAdminSerializer(serializers.ModelSerializer):
     choices = ChoiceSerializer(many=True, read_only=True)
 
     class Meta:
+        """Метаданные сериализатора."""
+
         model = Question
         fields = ['id', 'product', 'text', 'choices']
 
@@ -63,6 +66,8 @@ class UserAnswerSerializer(serializers.ModelSerializer):
     """Сериализатор для сохранённых ответов."""
 
     class Meta:
+        """Метаданные сериализатора."""
+
         model = UserAnswer
         fields = ['id', 'user', 'question', 'choice', 'is_correct', 'created_at']
         read_only_fields = ['user', 'is_correct', 'created_at']

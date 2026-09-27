@@ -1,0 +1,14 @@
+services:
+  web:
+    build: .
+    container_name: homework_web
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=config.settings
+    stdin_open: true
+    tty: true

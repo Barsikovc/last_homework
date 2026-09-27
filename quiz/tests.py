@@ -1,14 +1,18 @@
+"""Тесты для приложения quiz."""
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
 from catalog.models import Category, Product
-from .models import Question, Choice, UserAnswer
+from .models import Choice, Question, UserAnswer
 
 
 class QuizModelTest(APITestCase):
+    """Тесты моделей приложения quiz."""
+
     def setUp(self):
+        """Создаёт тестовые данные."""
         self.cat = Category.objects.create(name='Тест', slug='test')
         self.product = Product.objects.create(
             category=self.cat, name='Товар', price='100.00'
@@ -24,14 +28,19 @@ class QuizModelTest(APITestCase):
         )
 
     def test_question_str(self):
+        """Проверяет строковое представление вопроса."""
         self.assertIn('Какой цвет', str(self.question))
 
     def test_choice_str(self):
+        """Проверяет строковое представление варианта."""
         self.assertEqual(str(self.correct), 'Синий')
 
 
 class QuizAPITest(APITestCase):
+    """Тесты эндпоинтов приложения quiz."""
+
     def setUp(self):
+        """Создаёт пользователя, токен и тестовые данные."""
         self.user = User.objects.create_user(
             username='user1', password='Pass12345'
         )
@@ -52,8 +61,10 @@ class QuizAPITest(APITestCase):
         )
 
     def test_random_question(self):
-        """GET /api/questions/random/?product=1 — возвращает вопрос с вариантами без is_correct."""
-        response = self.client.get(f'/api/questions/random/?product={self.product.id}')
+        """GET /api/questions/random/ возвращает вопрос без is_correct."""
+        response = self.client.get(
+            f'/api/questions/random/?product={self.product.id}'
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['id'], self.question.id)
         for choice in response.data['choices']:
@@ -107,5 +118,7 @@ class QuizAPITest(APITestCase):
             format='json',
         )
         self.assertTrue(
-            UserAnswer.objects.filter(user=self.user, question=self.question).exists()
+            UserAnswer.objects.filter(
+                user=self.user, question=self.question
+            ).exists()
         )

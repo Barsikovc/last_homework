@@ -1,23 +1,29 @@
+"""Модели приложения catalog."""
 from django.db import models
 
 
 class Category(models.Model):
     """Раздел каталога (например, 'Электроника', 'Одежда')."""
+
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(blank=True)
 
     class Meta:
+        """Метаданные модели."""
+
         verbose_name = "Раздел"
         verbose_name_plural = "Разделы"
         ordering = ['name']
 
     def __str__(self):
+        """Возвращает название раздела."""
         return self.name
 
 
 class Product(models.Model):
     """Содержимое раздела — товар."""
+
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -30,9 +36,12 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        """Метаданные модели."""
+
         verbose_name = "Товар"
         verbose_name_plural = "Товары"
         ordering = ['-created_at']
 
     def __str__(self):
+        """Возвращает название товара."""
         return self.name
