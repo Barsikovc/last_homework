@@ -1,7 +1,8 @@
-from django.urls import path, include
+"""URL-маршруты приложения quiz."""
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import QuestionViewSet, ChoiceViewSet, UserAnswerViewSet
+from .views import ChoiceViewSet, QuestionViewSet, UserAnswerViewSet
 
 router = DefaultRouter()
 router.register(r'questions', QuestionViewSet, basename='question')

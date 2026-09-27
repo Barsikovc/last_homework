@@ -1,4 +1,5 @@
-from django.urls import path, include
+"""URL-маршруты приложения catalog."""
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import CategoryViewSet, ProductViewSet

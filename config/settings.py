@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     # Наши приложения
     'users',
     'catalog',
-    'quiz',  
+    'quiz',
 ]
 
 MIDDLEWARE = [
@@ -134,4 +134,3 @@ REST_FRAMEWORK = {
 # MEDIA — для загрузки картинок товаров
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-

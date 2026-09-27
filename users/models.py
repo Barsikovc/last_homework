@@ -1,3 +1,5 @@
-from django.db import models
+"""Модели приложения users.
 
-# Create your models here.
+Приложение использует стандартную модель User из django.contrib.auth,
+поэтому собственные модели здесь не определены.
+"""

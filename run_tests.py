@@ -1,5 +1,5 @@
-"""
-Запуск тестов Django из файла.
+"""Запуск тестов Django из файла.
+
 Использование:
     python run_tests.py
 """
@@ -9,6 +9,7 @@ import sys
 
 
 def main():
+    """Запускает тесты Django через manage.py test."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
     print("=" * 60)
     print("ЗАПУСК ТЕСТОВ ИЗ ФАЙЛА run_tests.py")

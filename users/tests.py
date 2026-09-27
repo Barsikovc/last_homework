@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.urls import reverse
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
@@ -9,12 +8,14 @@ class UserModelTest(APITestCase):
     """Тесты модели User."""
 
     def test_create_user(self):
+        """Проверяет создание пользователя."""
         user = User.objects.create_user(username='test', password='Pass12345')
         self.assertEqual(user.username, 'test')
         self.assertTrue(user.check_password('Pass12345'))
         self.assertFalse(user.is_staff)
 
     def test_str(self):
+        """Проверяет строковое представление пользователя."""
         user = User.objects.create_user(username='test', password='Pass12345')
         self.assertEqual(str(user), 'test')
 
@@ -23,6 +24,7 @@ class UserAPITest(APITestCase):
     """Тесты эндпоинтов users."""
 
     def setUp(self):
+        """Создаёт админа и токен для тестов."""
         self.admin = User.objects.create_superuser(
             username='admin', password='Admin12345', email='admin@test.com'
         )
@@ -60,11 +62,13 @@ class TokenTest(APITestCase):
     """Тесты получения токена."""
 
     def setUp(self):
+        """Создаёт пользователя для тестов токена."""
         self.user = User.objects.create_user(
             username='admin', password='Admin12345'
         )
 
     def test_obtain_token(self):
+        """POST /api/token/ возвращает токен."""
         response = self.client.post('/api/token/', {
             'username': 'admin',
             'password': 'Admin12345',

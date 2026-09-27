@@ -1,36 +1,35 @@
-from django.contrib.auth.models import User
+"""Views для приложения quiz."""
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status, permissions
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .models import Question, Choice, UserAnswer
+from .models import Choice, Question, UserAnswer
 from .permissions import IsAdminOrReadOnly, IsAuthenticatedForAnswer
 from .serializers import (
-    QuestionSerializer,
-    QuestionAdminSerializer,
     ChoiceSerializer,
+    QuestionAdminSerializer,
+    QuestionSerializer,
     UserAnswerSerializer,
 )
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
+    """ViewSet для модели Question."""
+
     queryset = Question.objects.all()
     permission_classes = [IsAdminOrReadOnly]
-    pagination_class = None  # без пагинации, чтобы удобно было в тестах
+    pagination_class = None
 
     def get_serializer_class(self):
-        # Админ видит is_correct, остальные — нет
+        """Выбирает сериализатор: админ видит is_correct, остальные — нет."""
         if self.request.user and self.request.user.is_staff:
             return QuestionAdminSerializer
         return QuestionSerializer
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny])
     def random(self, request):
-        """
-        GET /api/questions/random/?product=<id>
-        Возвращает случайный вопрос по продукту.
-        """
+        """GET /api/questions/random/?product=<id> — случайный вопрос по продукту."""
         product_id = request.query_params.get('product')
         if not product_id:
             return Response(
@@ -50,11 +49,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticatedForAnswer])
     def answer(self, request, pk=None):
-        """
-        POST /api/questions/<id>/answer/
-        Тело: {"choice": <id>}
-        Ответ: {"correct": true/false, "correct_choice": <id>}
-        """
+        """POST /api/questions/<id>/answer/ — ответ на вопрос."""
         question = self.get_object()
         choice_id = request.data.get('choice')
 
@@ -83,15 +78,19 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
 
 class ChoiceViewSet(viewsets.ModelViewSet):
+    """ViewSet для модели Choice."""
+
     queryset = Choice.objects.all()
     serializer_class = ChoiceSerializer
     permission_classes = [IsAdminOrReadOnly]
 
 
 class UserAnswerViewSet(viewsets.ReadOnlyModelViewSet):
-    """Только просмотр своих ответов. Создание — через /questions/{id}/answer/."""
+    """Просмотр своих ответов. Создание — через /questions/{id}/answer/."""
+
     serializer_class = UserAnswerSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        """Возвращает только ответы текущего пользователя."""
         return UserAnswer.objects.filter(user=self.request.user)

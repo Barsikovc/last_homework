@@ -1,5 +1,5 @@
-"""
-Запуск тестов с подсчётом покрытия и генерацией htmlcov.
+"""Запуск тестов с подсчётом покрытия и генерацией htmlcov.
+
 Использование:
     python run_coverage.py
 """
@@ -9,6 +9,7 @@ import sys
 
 
 def run(cmd):
+    """Запускает команду и завершает процесс при ошибке."""
     print(f"\n>>> {' '.join(cmd)}\n")
     result = subprocess.run(cmd)
     if result.returncode != 0:
@@ -16,6 +17,7 @@ def run(cmd):
 
 
 def main():
+    """Запускает тесты с coverage и генерирует HTML-отчёт."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
     print("=" * 60)

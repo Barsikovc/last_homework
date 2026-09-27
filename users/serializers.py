@@ -20,16 +20,18 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email', 'password', 'password_confirm']
 
-    def validate(self, data):
-        if data['password'] != data['password_confirm']:
-            raise serializers.ValidationError({"password": "Пароли не совпадают."})
-        return data
+        def validate(self, data):
+            """Проверяет совпадение пароля и подтверждения."""
+            if data['password'] != data['password_confirm']:
+                raise serializers.ValidationError({"password": "Пароли не совпадают."})
+            return data
 
-    def create(self, validated_data):
-        validated_data.pop('password_confirm')
-        user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data.get('email', ''),
-            password=validated_data['password'],
-        )
-        return user
+        def create(self, validated_data):
+            """Создаёт нового пользователя."""
+            validated_data.pop('password_confirm')
+            user = User.objects.create_user(
+                username=validated_data['username'],
+                email=validated_data.get('email', ''),
+                password=validated_data['password'],
+            )
+            return user
