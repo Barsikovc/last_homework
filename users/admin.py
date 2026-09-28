@@ -1,11 +1,5 @@
-"""Настройка админки для приложения users."""
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User
+"""Настройка админки для приложения users.
 
-
-@admin.register(User)
-class UserAdmin(BaseUserAdmin):
-    """Админка для стандартной модели User."""
-
-    pass
+Стандартная модель User уже зарегистрирована в django.contrib.auth,
+поэтому повторная регистрация здесь не требуется.
+"""

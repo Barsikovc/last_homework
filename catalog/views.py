@@ -1,5 +1,6 @@
 """Views для приложения catalog."""
-from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, viewsets
 
 from .models import Category, Product
 from .paginators import StandardResultsSetPagination
@@ -15,6 +16,15 @@ class CategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     pagination_class = StandardResultsSetPagination
 
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    search_fields = ['name', 'description']
+    ordering_fields = ['name']
+    ordering = ['name']
+
 
 class ProductViewSet(viewsets.ModelViewSet):
     """ViewSet для модели Product."""
@@ -23,3 +33,13 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     permission_classes = [IsAdminOrReadOnly]
     pagination_class = StandardResultsSetPagination
+
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    filterset_fields = ['category']
+    search_fields = ['name', 'description']
+    ordering_fields = ['name', 'price', 'created_at']
+    ordering = ['-created_at']

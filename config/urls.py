@@ -19,6 +19,7 @@ urlpatterns = [
     path('api/', include('users.urls')),
     path('api/', include('catalog.urls')),
     path('api/', include('quiz.urls')),
+    path('api/', include('reviews.urls')),
 
     # Документация
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
